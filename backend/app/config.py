@@ -14,3 +14,6 @@ REDDIT_USER_AGENT = get_env("REDDIT_USER_AGENT")
 
 MAX_POST_LIMIT = int(os.getenv("MAX_POST_LIMIT", "25"))
 
+ENABLE_SARCASM = os.getenv("ENABLE_SARCASM", "false").lower() in {"1", "true", "yes"}
+SARCASM_MODEL = os.getenv("SARCASM_MODEL")
+

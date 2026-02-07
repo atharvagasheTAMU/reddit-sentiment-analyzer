@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 from pydantic import BaseModel
 
@@ -12,6 +12,7 @@ class PostAnalysis(BaseModel):
     cleaned_text: str
     summary: str
     sentiment: Dict[str, Any]
+    sarcasm: Optional[Dict[str, Any]] = None
 
 
 class AnalyzeResponse(BaseModel):

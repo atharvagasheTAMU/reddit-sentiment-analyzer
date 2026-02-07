@@ -4,7 +4,7 @@ from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.reddit_client import fetch_latest_posts
-from app.nlp import clean_text, summarize, analyze_sentiment
+from app.nlp import clean_text, summarize, analyze_sentiment, analyze_sarcasm
 from app.schemas import AnalyzeResponse, PostAnalysis
 from app.config import MAX_POST_LIMIT
 
@@ -41,6 +41,7 @@ def analyze_subreddit(
         cleaned = clean_text(text)
         summary = summarize(cleaned) if cleaned else ""
         sentiment = analyze_sentiment(cleaned)
+        sarcasm = analyze_sarcasm(cleaned)
         items.append(
             PostAnalysis(
                 id=post["id"],
@@ -51,6 +52,7 @@ def analyze_subreddit(
                 cleaned_text=cleaned,
                 summary=summary,
                 sentiment=sentiment,
+                sarcasm=sarcasm,
             )
         )
 

@@ -1,14 +1,16 @@
 import re
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from transformers import pipeline
 
+from app.config import ENABLE_SARCASM, SARCASM_MODEL
 
 URL_PATTERN = re.compile(r"https?://\S+|www\.\S+", re.IGNORECASE)
 NON_TEXT_PATTERN = re.compile(r"[^a-zA-Z0-9\s\.\,\!\?\-]", re.IGNORECASE)
 
 _summarizer = None
 _sentiment = None
+_sarcasm = None
 
 
 def clean_text(text: str) -> str:
@@ -32,6 +34,15 @@ def _get_sentiment():
     return _sentiment
 
 
+def _get_sarcasm():
+    global _sarcasm
+    if _sarcasm is None:
+        if not ENABLE_SARCASM or not SARCASM_MODEL:
+            return None
+        _sarcasm = pipeline("text-classification", model=SARCASM_MODEL)
+    return _sarcasm
+
+
 def summarize(text: str) -> str:
     if not text:
         return ""
@@ -45,5 +56,13 @@ def analyze_sentiment(text: str) -> Dict[str, Any]:
         return {"label": "NEUTRAL", "score": 0.0}
     sentiment = _get_sentiment()
     result = sentiment(text[:512])[0]
+    return {"label": result["label"], "score": float(result["score"])}
+
+
+def analyze_sarcasm(text: str) -> Optional[Dict[str, Any]]:
+    sarcasm = _get_sarcasm()
+    if not text or sarcasm is None:
+        return None
+    result = sarcasm(text[:512])[0]
     return {"label": result["label"], "score": float(result["score"])}
 

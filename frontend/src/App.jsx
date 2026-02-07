@@ -83,6 +83,12 @@ export default function App() {
                 Sentiment: {item.sentiment?.label} (
                 {item.sentiment?.score?.toFixed?.(2)})
               </span>
+              {item.sarcasm && (
+                <span>
+                  Sarcasm: {item.sarcasm?.label} (
+                  {item.sarcasm?.score?.toFixed?.(2)})
+                </span>
+              )}
             </div>
             <p className="summary">{item.summary || "No summary available."}</p>
           </article>

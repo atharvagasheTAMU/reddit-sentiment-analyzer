@@ -45,3 +45,24 @@ Open the dev server URL and query a subreddit.
 - Sentiment uses `distilbert-base-uncased-finetuned-sst-2-english`.
 - Text is cleaned by removing URLs and special characters.
 
+## Optional: Sarcasm Detection (RoBERTa)
+
+You can enable sarcasm detection by providing a RoBERTa-based model and flag:
+
+```
+ENABLE_SARCASM=true
+SARCASM_MODEL=your_roberta_sarcasm_model_id
+```
+
+When enabled, the API returns a `sarcasm` field per post with label and score.
+
+## LoRA Fine-Tuning (BART)
+
+See `training/README.md` for a minimal LoRA fine-tuning script that trains
+`facebook/bart-large-cnn` on your Reddit dataset.
+
+## SageMaker Real-Time API
+
+See `deployment/sagemaker/README.md` for a template to deploy the model as a
+SageMaker real-time endpoint.
+
