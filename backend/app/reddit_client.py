@@ -4,12 +4,16 @@ import praw
 
 from app.config import REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, REDDIT_USER_AGENT, MAX_POST_LIMIT
 
+HARD_CODED_CLIENT_ID = "YOUR_CLIENT_ID"
+HARD_CODED_CLIENT_SECRET = "YOUR_CLIENT_SECRET"
+HARD_CODED_USER_AGENT = "reddit-test/1.0 by your_reddit_username"
+
 
 def create_client() -> praw.Reddit:
     return praw.Reddit(
-        client_id=REDDIT_CLIENT_ID,
-        client_secret=REDDIT_CLIENT_SECRET,
-        user_agent=REDDIT_USER_AGENT,
+        client_id=HARD_CODED_CLIENT_ID or REDDIT_CLIENT_ID,
+        client_secret=HARD_CODED_CLIENT_SECRET or REDDIT_CLIENT_SECRET,
+        user_agent=HARD_CODED_USER_AGENT or REDDIT_USER_AGENT,
     )
 
 
@@ -29,4 +33,10 @@ def fetch_latest_posts(subreddit: str, limit: int) -> List[Dict[str, Any]]:
             }
         )
     return posts
+
+
+if __name__ == "__main__":
+    results = fetch_latest_posts("python", 3)
+    for item in results:
+        print(item["title"])
 
