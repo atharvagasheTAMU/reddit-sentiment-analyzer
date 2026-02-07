@@ -1,9 +1,15 @@
 import re
 from typing import Dict, Any, Optional
 
+import torch
 from transformers import pipeline
 
-from app.config import ENABLE_SARCASM, SARCASM_MODEL
+from app.config import (
+    ENABLE_SARCASM,
+    SARCASM_MODEL,
+    SUMMARIZER_MODEL,
+    SENTIMENT_MODEL,
+)
 
 URL_PATTERN = re.compile(r"https?://\S+|www\.\S+", re.IGNORECASE)
 NON_TEXT_PATTERN = re.compile(r"[^a-zA-Z0-9\s\.\,\!\?\-]", re.IGNORECASE)
@@ -11,6 +17,8 @@ NON_TEXT_PATTERN = re.compile(r"[^a-zA-Z0-9\s\.\,\!\?\-]", re.IGNORECASE)
 _summarizer = None
 _sentiment = None
 _sarcasm = None
+
+DEVICE = 0 if torch.cuda.is_available() else -1
 
 
 def clean_text(text: str) -> str:
@@ -23,14 +31,22 @@ def clean_text(text: str) -> str:
 def _get_summarizer():
     global _summarizer
     if _summarizer is None:
-        _summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+        _summarizer = pipeline(
+            "summarization",
+            model=SUMMARIZER_MODEL,
+            device=DEVICE,
+        )
     return _summarizer
 
 
 def _get_sentiment():
     global _sentiment
     if _sentiment is None:
-        _sentiment = pipeline("sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english")
+        _sentiment = pipeline(
+            "sentiment-analysis",
+            model=SENTIMENT_MODEL,
+            device=DEVICE,
+        )
     return _sentiment
 
 
@@ -39,7 +55,11 @@ def _get_sarcasm():
     if _sarcasm is None:
         if not ENABLE_SARCASM or not SARCASM_MODEL:
             return None
-        _sarcasm = pipeline("text-classification", model=SARCASM_MODEL)
+        _sarcasm = pipeline(
+            "text-classification",
+            model=SARCASM_MODEL,
+            device=DEVICE,
+        )
     return _sarcasm
 
 
