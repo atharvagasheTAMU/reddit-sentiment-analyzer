@@ -1,5 +1,7 @@
 # Reddit-AnalyXer (Sentiment + Summarization)
 
+![Demo](assets/demo.gif)
+
 A full-stack Reddit analysis app with:
 
 - FastAPI backend that fetches posts via the Reddit API.
